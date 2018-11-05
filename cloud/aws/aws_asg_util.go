@@ -25,6 +25,14 @@ func describeScalingGroup(asgName string,
 	}
 	resp, err := svc.DescribeAutoScalingGroups(params)
 
+	// If we failed to get resp, return error.
+	if err != nil {
+		logging.Error("cloud/aws: an error occurred while attempting to "+
+			"describe the autoscaling group %v for worker pool: %v",
+			asgName, err)
+	  return resp, err
+	}
+
 	// If we failed to get exactly one ASG, raise an error.
 	if len(resp.AutoScalingGroups) != 1 {
 		err = fmt.Errorf("the attempt to retrieve the current worker pool "+
